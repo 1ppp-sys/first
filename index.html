@@ -1,22 +1,1143 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
-    <style>  
-      body {
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录页面</title>
+    <style>
+      * {
         margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        min-height: 100vh;
+        background: linear-gradient(
+          135deg,
+          #0f172a 0%,
+          #1e293b 50%,
+          #0f172a 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-x: hidden;
+      }
+
+      /* 背景装饰 */
+      .background-decoration {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .background-decoration::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        left: -100px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(249, 115, 22, 0.15) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        animation: float-bg 20s ease-in-out infinite;
+      }
+
+      .background-decoration::after {
+        content: "";
+        position: absolute;
+        bottom: -100px;
+        right: -100px;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(
+          circle,
+          rgba(168, 85, 247, 0.1) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        animation: float-bg 25s ease-in-out infinite reverse;
+      }
+
+      @keyframes float-bg {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        25% {
+          transform: translate(30px, -30px) scale(1.1);
+        }
+        50% {
+          transform: translate(-20px, 20px) scale(0.95);
+        }
+        75% {
+          transform: translate(-30px, -20px) scale(1.05);
+        }
+      }
+
+      /* 主容器 */
+      .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 60px;
+        max-width: 1200px;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* 左侧：几何角色区域 */
+      .characters-section {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 400px;
+      }
+
+      .characters-container {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        height: 400px;
+      }
+
+      /* 几何角色通用样式 */
+      .character {
+        position: absolute;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .character:hover {
+        transform: scale(1.1) !important;
+      }
+
+      /* 橙色圆形 */
+      .character-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        box-shadow: 0 8px 32px rgba(249, 115, 22, 0.4);
+        top: 10%;
+        left: 5%;
+        animation: float 4s ease-in-out infinite;
+        animation-delay: 0s;
+      }
+
+      /* 紫色矩形 */
+      .character-rectangle {
+        width: 140px;
+        height: 100px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+        box-shadow: 0 8px 32px rgba(168, 85, 247, 0.4);
+        top: 5%;
+        right: 10%;
+        animation: float 4s ease-in-out infinite;
+        animation-delay: 1s;
+      }
+
+      /* 黑色方形 */
+      .character-square {
+        width: 110px;
+        height: 110px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        box-shadow: 0 8px 32px rgba(31, 41, 55, 0.6);
+        bottom: 20%;
+        left: 15%;
+        animation: float 4s ease-in-out infinite;
+        animation-delay: 2s;
+      }
+
+      /* 黄色三角形 */
+      .character-triangle {
+        width: 0;
+        height: 0;
+        border-left: 70px solid transparent;
+        border-right: 70px solid transparent;
+        border-bottom: 120px solid #eab308;
+        filter: drop-shadow(0 8px 16px rgba(234, 179, 8, 0.4));
+        bottom: 10%;
+        right: 5%;
+        animation: float 4s ease-in-out infinite;
+        animation-delay: 1.5s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        25% {
+          transform: translateY(-15px) rotate(2deg);
+        }
+        50% {
+          transform: translateY(-25px) rotate(0deg);
+        }
+        75% {
+          transform: translateY(-15px) rotate(-2deg);
+        }
+      }
+
+      /* 表情样式 */
+      .eyes {
+        display: flex;
+        gap: 8px;
+        position: absolute;
+        top: 40%;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .eye {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+      }
+
+      .eye::after {
+        content: "";
+        position: absolute;
+        top: 30%;
+        left: 30%;
+        width: 40%;
+        height: 40%;
+        border-radius: 50%;
+        background: #1f2937;
+        transition: transform 0.1s ease-out;
+        transform: translate(var(--pupil-x, 0px), var(--pupil-y, 0px));
+      }
+
+      .mouth {
+        position: absolute;
+        bottom: 30%;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* 不同表情状态 */
+      /* 好奇表情 */
+      .character.curious .eye {
+        width: 16px;
+        height: 20px;
+      }
+
+      .character.curious .eye::after {
+        top: 25%;
+        left: 20%;
+        width: 60%;
+        height: 50%;
+      }
+
+      .character.curious .mouth {
+        width: 30px;
+        height: 12px;
+        border: 3px solid #fff;
+        border-top: none;
+        border-radius: 0 0 50% 50%;
+        transform: scaleX(0.8);
+      }
+
+      /* 专注表情 */
+      .character.focused .eye {
+        width: 16px;
+        height: 22px;
+      }
+
+      .character.focused .eye::after {
+        top: 35%;
+        left: 35%;
+        width: 30%;
+        height: 30%;
+      }
+
+      .character.focused .mouth {
+        width: 20px;
+        height: 6px;
+        background: #fff;
+        border-radius: 3px;
+      }
+
+      /* 开心表情 */
+      .character.happy .eye {
+        width: 16px;
+        height: 6px;
+        border-radius: 3px;
+      }
+
+      .character.happy .eye::after {
+        display: none;
+      }
+
+      .character.happy .mouth {
+        width: 40px;
+        height: 24px;
+        background: #fff;
+        border-radius: 0 0 50% 50%;
+        transform: scaleY(1.2);
+      }
+
+      /* 中心装饰 */
+      .center-emoji {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 60px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 0.7;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.1);
+          opacity: 1;
+        }
+      }
+
+      /* 右侧：登录表单区域 */
+      .login-section {
+        flex: 1;
+        max-width: 420px;
+        width: 100%;
+      }
+
+      .login-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 40px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.8s ease-out;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 标题 */
+      .login-title {
+        text-align: center;
+        font-size: 36px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 8px;
+        animation: fadeIn 0.8s ease-out;
+      }
+
+      .login-subtitle {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 16px;
+        margin-bottom: 32px;
+        animation: fadeIn 0.8s ease-out 0.1s backwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* 表单输入组 */
+      .input-group {
+        margin-bottom: 24px;
+        animation: fadeIn 0.8s ease-out backwards;
+      }
+
+      .input-group:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .input-group:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      .input-group:nth-child(4) {
+        animation-delay: 0.4s;
+      }
+
+      .input-label {
+        display: block;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+
+      .input-wrapper {
+        position: relative;
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.4);
+        pointer-events: none;
+      }
+
+      .input-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 14px 14px 14px 46px;
+        background: rgba(30, 41, 59, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .input-field::placeholder {
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      .input-field:focus {
+        border-color: #f97316;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+        background: rgba(30, 41, 59, 0.7);
+      }
+
+      .input-field.password-focused:focus {
+        border-color: #a855f7;
+        box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.2);
+      }
+
+      /* 密码切换按钮 */
+      .password-toggle {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        padding: 4px;
+        transition: color 0.3s;
+      }
+
+      .password-toggle:hover {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .password-toggle svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* 忘记密码 */
+      .forgot-password {
+        display: block;
+        text-align: right;
+        margin-bottom: 24px;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.3s;
+        animation: fadeIn 0.8s ease-out 0.3s backwards;
+      }
+
+      .forgot-password:hover {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      /* 登录按钮 */
+      .login-button {
+        width: 100%;
+        padding: 16px;
+        background: #000;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.8s ease-out 0.4s backwards;
+      }
+
+      .login-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      }
+
+      .login-button:active {
+        transform: translateY(0);
+      }
+
+      .login-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* 分隔线 */
+      .divider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin: 24px 0;
+        animation: fadeIn 0.8s ease-out 0.5s backwards;
+      }
+
+      .divider-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .divider-text {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 14px;
+      }
+
+      /* 谷歌登录按钮 */
+      .google-button {
+        width: 100%;
+        padding: 16px;
+        background: #fff;
+        color: #1f2937;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        animation: fadeIn 0.8s ease-out 0.6s backwards;
+      }
+
+      .google-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+      }
+
+      .google-button:active {
+        transform: translateY(0);
+      }
+
+      .google-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* 注册链接 */
+      .register-link {
+        text-align: center;
+        margin-top: 24px;
+        animation: fadeIn 0.8s ease-out 0.7s backwards;
+      }
+
+      .register-link span {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .register-link a {
+        color: #f97316;
+        text-decoration: none;
+        font-weight: 600;
+        margin-left: 4px;
+        transition: color 0.3s;
+      }
+
+      .register-link a:hover {
+        color: #ea580c;
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 1024px) {
+        .container {
+          gap: 40px;
+        }
+
+        .characters-container {
+          max-width: 400px;
+          height: 350px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+          gap: 40px;
+        }
+
+        .characters-container {
+          height: 300px;
+        }
+
+        .character-circle,
+        .character-rectangle,
+        .character-square {
+          width: 80px;
+          height: 80px;
+        }
+
+        .character-rectangle {
+          width: 100px;
+          height: 70px;
+        }
+
+        .character-triangle {
+          border-left-width: 50px;
+          border-right-width: 50px;
+          border-bottom-width: 90px;
+        }
+
+        .eye {
+          width: 12px;
+          height: 12px;
+        }
+
+        .login-card {
+          padding: 32px 24px;
+        }
+
+        .login-title {
+          font-size: 28px;
+        }
+      }
+
+      /* 成功动画 */
+      .success-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        backdrop-filter: blur(10px);
+      }
+
+      .success-overlay.show {
+        display: flex;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .success-content {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 48px;
+        text-align: center;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        animation: scaleIn 0.4s ease-out;
+      }
+
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .success-emoji {
+        font-size: 80px;
+        margin-bottom: 24px;
+        animation: bounce 0.6s ease-out;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      .success-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 12px;
+      }
+
+      .success-message {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 16px;
       }
     </style>
   </head>
   <body>
-    <div style="
-  
-    color:green">
-    <div><p>
-天天开心呀</p>
-    <div>
+    <!-- 背景装饰 -->
+    <div class="background-decoration"></div>
 
+    <!-- 主容器 -->
+    <div class="container">
+      <!-- 左侧：几何角色区域 -->
+      <div class="characters-section">
+        <div class="characters-container">
+          <!-- 橙色圆形 -->
+          <div class="character character-circle" id="circle">
+            <div class="eyes">
+              <div class="eye"></div>
+              <div class="eye"></div>
+            </div>
+            <div class="mouth"></div>
+          </div>
+
+          <!-- 紫色矩形 -->
+          <div class="character character-rectangle" id="rectangle">
+            <div class="eyes">
+              <div class="eye"></div>
+              <div class="eye"></div>
+            </div>
+            <div class="mouth"></div>
+          </div>
+
+          <!-- 黑色方形 -->
+          <div class="character character-square" id="square">
+            <div class="eyes">
+              <div class="eye"></div>
+              <div class="eye"></div>
+            </div>
+            <div class="mouth"></div>
+          </div>
+
+          <!-- 黄色三角形 -->
+          <div class="character character-triangle" id="triangle">
+            <div class="eyes">
+              <div class="eye"></div>
+              <div class="eye"></div>
+            </div>
+            <div class="mouth"></div>
+          </div>
+
+          <!-- 中心装饰 -->
+          <div class="center-emoji">👋</div>
+        </div>
+      </div>
+
+      <!-- 右侧：登录表单区域 -->
+      <div class="login-section">
+        <div class="login-card">
+          <h1 class="login-title">欢迎回来！</h1>
+          <p class="login-subtitle">登录您的账户继续使用</p>
+
+          <!-- 邮箱输入框 -->
+          <div class="input-group">
+            <label class="input-label">邮箱地址</label>
+            <div class="input-wrapper">
+              <div class="input-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="email"
+                id="email"
+                class="input-field"
+                placeholder="请输入您的邮箱"
+              />
+            </div>
+          </div>
+
+          <!-- 密码输入框 -->
+          <div class="input-group">
+            <label class="input-label">密码</label>
+            <div class="input-wrapper">
+              <div class="input-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="password"
+                id="password"
+                class="input-field"
+                placeholder="请输入您的密码"
+              />
+              <button type="button" class="password-toggle" id="togglePassword">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  id="eyeIcon"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- 忘记密码 -->
+          <a href="#" class="forgot-password">忘记密码？</a>
+
+          <!-- 登录按钮 -->
+          <button class="login-button" id="loginBtn">登录</button>
+
+          <!-- 分隔线 -->
+          <div class="divider">
+            <div class="divider-line"></div>
+            <span class="divider-text">或</span>
+            <div class="divider-line"></div>
+          </div>
+
+          <!-- 谷歌登录 -->
+          <button class="google-button" id="googleBtn">
+            <svg
+              class="google-icon"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              />
+              <path
+                fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              />
+            </svg>
+            使用谷歌登录
+          </button>
+
+          <!-- 注册链接 -->
+          <div class="register-link">
+            <span>还没有账号？</span>
+            <a href="#">立即注册</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 成功弹窗 -->
+    <div class="success-overlay" id="successOverlay">
+      <div class="success-content">
+        <div class="success-emoji">🎉</div>
+        <h2 class="success-title">登录成功！</h2>
+        <p class="success-message">欢迎回来，正在跳转...</p>
+      </div>
+    </div>
+
+    <script>
+      // 获取DOM元素
+      const characters = document.querySelectorAll(".character");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const togglePasswordBtn = document.getElementById("togglePassword");
+      const eyeIcon = document.getElementById("eyeIcon");
+      const loginBtn = document.getElementById("loginBtn");
+      const googleBtn = document.getElementById("googleBtn");
+      const successOverlay = document.getElementById("successOverlay");
+
+      // 表情状态
+      let currentEmotion = "idle";
+
+      // 设置角色表情
+      function setEmotion(emotion) {
+        currentEmotion = emotion;
+        characters.forEach((char) => {
+          // 移除所有表情类
+          char.classList.remove("curious", "focused", "happy");
+          // 添加新表情类
+          if (emotion !== "idle") {
+            char.classList.add(emotion);
+          }
+        });
+      }
+
+      // 邮箱输入框聚焦 - 好奇表情
+      emailInput.addEventListener("focus", () => {
+        setEmotion("curious");
+        // 添加输入反馈动画
+        emailInput.parentElement.style.transform = "scale(1.02)";
+      });
+
+      emailInput.addEventListener("blur", () => {
+        emailInput.parentElement.style.transform = "scale(1)";
+        if (!emailInput.value && !passwordInput.value) {
+          setEmotion("idle");
+        }
+      });
+
+      // 密码输入框聚焦 - 专注表情
+      passwordInput.addEventListener("focus", () => {
+        setEmotion("focused");
+        passwordInput.classList.add("password-focused");
+        // 添加输入反馈动画
+        passwordInput.parentElement.style.transform = "scale(1.02)";
+      });
+
+      passwordInput.addEventListener("blur", () => {
+        passwordInput.classList.remove("password-focused");
+        passwordInput.parentElement.style.transform = "scale(1)";
+        if (!emailInput.value && !passwordInput.value) {
+          setEmotion("idle");
+        }
+      });
+
+      // 密码可见性切换
+      let isPasswordVisible = false;
+      togglePasswordBtn.addEventListener("click", () => {
+        isPasswordVisible = !isPasswordVisible;
+        passwordInput.type = isPasswordVisible ? "text" : "password";
+
+        // 切换图标
+        if (isPasswordVisible) {
+          eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                `;
+        } else {
+          eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                `;
+        }
+
+        // 添加点击动画
+        togglePasswordBtn.style.transform = isPasswordVisible
+          ? "translateY(-50%) scale(1.2)"
+          : "translateY(-50%) scale(1)";
+        setTimeout(() => {
+          togglePasswordBtn.style.transform = "translateY(-50%) scale(1)";
+        }, 200);
+      });
+
+      // 登录按钮点击 - 开心表情
+      loginBtn.addEventListener("click", () => {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        // 简单验证
+        if (!email || !password) {
+          // 摇晃动画提示
+          loginBtn.style.animation = "none";
+          setTimeout(() => {
+            loginBtn.style.animation = "shake 0.5s ease";
+          }, 10);
+
+          // 添加摇晃动画
+          const style = document.createElement("style");
+          style.textContent = `
+                    @keyframes shake {
+                        0%, 100% { transform: translateX(0); }
+                        20% { transform: translateX(-10px); }
+                        40% { transform: translateX(10px); }
+                        60% { transform: translateX(-10px); }
+                        80% { transform: translateX(10px); }
+                    }
+                `;
+          document.head.appendChild(style);
+
+          return;
+        }
+
+        // 设置开心表情
+        setEmotion("happy");
+
+        // 添加加载状态
+        loginBtn.disabled = true;
+        loginBtn.textContent = "登录中...";
+
+        // 模拟登录
+        setTimeout(() => {
+          // 显示成功弹窗
+          successOverlay.classList.add("show");
+
+          // 重置状态
+          setTimeout(() => {
+            successOverlay.classList.remove("show");
+            loginBtn.disabled = false;
+            loginBtn.textContent = "登录";
+            setEmotion("idle");
+
+            // 清空输入
+            emailInput.value = "";
+            passwordInput.value = "";
+          }, 2000);
+        }, 1500);
+      });
+
+      // 谷歌登录按钮
+      googleBtn.addEventListener("click", () => {
+        setEmotion("happy");
+        googleBtn.textContent = "正在跳转到谷歌...";
+        googleBtn.disabled = true;
+
+        setTimeout(() => {
+          googleBtn.textContent = "使用谷歌登录";
+          googleBtn.disabled = false;
+          setEmotion("idle");
+        }, 2000);
+      });
+
+      // 角色悬停效果
+      characters.forEach((char) => {
+        char.addEventListener("mouseenter", () => {
+          char.style.zIndex = "10";
+        });
+
+        char.addEventListener("mouseleave", () => {
+          char.style.zIndex = "1";
+        });
+      });
+
+      // 输入框回车提交
+      passwordInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          loginBtn.click();
+        }
+      });
+
+      // 页面加载完成动画
+      document.addEventListener("DOMContentLoaded", () => {
+        characters.forEach((char, index) => {
+          char.style.opacity = "0";
+          char.style.animation = `fadeIn 0.6s ease-out ${index * 0.1}s forwards, float 4s ease-in-out infinite ${index * 0.5}s`;
+        });
+
+        // 初始化眼睛跟随鼠标功能
+        initEyeTracking();
+      });
+
+      // 眼睛跟随鼠标功能
+      function initEyeTracking() {
+        // 鼠标移动事件
+        document.addEventListener("mousemove", (e) => {
+          const mouseX = e.clientX;
+          const mouseY = e.clientY;
+
+          // 遍历所有角色
+          characters.forEach((character) => {
+            const eyes = character.querySelectorAll(".eye");
+
+            eyes.forEach((eye) => {
+              const eyeRect = eye.getBoundingClientRect();
+              const eyeCenterX = eyeRect.left + eyeRect.width / 2;
+              const eyeCenterY = eyeRect.top + eyeRect.height / 2;
+
+              // 计算从眼睛中心到鼠标的角度和距离
+              const deltaX = mouseX - eyeCenterX;
+              const deltaY = mouseY - eyeCenterY;
+              const angle = Math.atan2(deltaY, deltaX);
+              const distance = Math.min(
+                Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+                3, // 瞳孔最大移动距离（像素）
+              );
+
+              // 计算瞳孔位置
+              const pupilX = Math.cos(angle) * distance;
+              const pupilY = Math.sin(angle) * distance;
+
+              // 更新CSS变量
+              eye.style.setProperty("--pupil-x", `${pupilX}px`);
+              eye.style.setProperty("--pupil-y", `${pupilY}px`);
+            });
+          });
+        });
+
+        // 鼠标离开窗口时重置眼睛位置
+        document.addEventListener("mouseleave", () => {
+          characters.forEach((character) => {
+            const eyes = character.querySelectorAll(".eye");
+            eyes.forEach((eye) => {
+              eye.style.setProperty("--pupil-x", "0px");
+              eye.style.setProperty("--pupil-y", "0px");
+            });
+          });
+        });
+      }
+    </script>
   </body>
 </html>
