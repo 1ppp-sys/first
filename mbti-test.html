@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MBTI人格测试</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: #fff;
+        min-height: 100vh;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* 通用样式 */
+      .hidden {
+        display: none !important;
+      }
+
+      /* 页面容器 */
+      .page {
+        min-height: calc(100vh - 64px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        transition: all 0.5s ease;
+      }
+
+      .page.active {
+        display: flex;
+        animation: fadeIn 0.5s ease;
+      }
+
+      /* 首页特殊样式（无导航栏） */
+      #homepage {
+        min-height: 100vh;
+      }
+
+      /* 测试页特殊样式（无导航栏） */
+      #testpage {
+        min-height: 100vh;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 首页样式 */
+      .card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 60px 80px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+        text-align: center;
+        animation: scaleIn 0.6s ease;
+      }
+
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.9);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .card-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 40px;
+        line-height: 1.4;
+      }
+
+      .start-button {
+        background: #6b8b73;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 18px 60px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(107, 139, 115, 0.3);
+      }
+
+      .start-button:hover {
+        background: #5a7a63;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(107, 139, 115, 0.4);
+      }
+
+      .start-button:active {
+        transform: translateY(0);
+      }
+
+      /* 测试页样式 */
+      .question-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 50px 60px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        max-width: 700px;
+        width: 100%;
+      }
+
+      .question-number {
+        display: inline-block;
+        background: #6b8b73;
+        color: #fff;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 24px;
+      }
+
+      .question-text {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 32px;
+        line-height: 1.6;
+      }
+
+      .options-container {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .option-button {
+        background: #f8f5f0;
+        border: 2px solid #e0dcd0;
+        border-radius: 12px;
+        padding: 20px 24px;
+        font-size: 16px;
+        color: #4a5568;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: left;
+        font-weight: 500;
+      }
+
+      .option-button:hover {
+        background: #6b8b73;
+        border-color: #6b8b73;
+        color: #fff;
+        transform: translateX(8px);
+      }
+
+      .option-button.selected {
+        background: #6b8b73;
+        border-color: #6b8b73;
+        color: #fff;
+      }
+
+      .next-button {
+        background: #6b8b73;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 16px 48px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 32px;
+        width: 100%;
+      }
+
+      .next-button:hover {
+        background: #5a7a63;
+        transform: translateY(-2px);
+      }
+
+      .next-button:active {
+        transform: translateY(0);
+      }
+
+      .next-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 首页 -->
+    <div id="homepage" class="page active">
+      <!-- 主体内容 -->
+      <div class="card">
+        <h1 class="card-title">MBTI已经过时，SBTI来了。</h1>
+        <button class="start-button" id="startBtn">开始测试</button>
+      </div>
+    </div>
+
+    <!-- 测试页 -->
+    <div id="testpage" class="page hidden">
+      <!-- 主体内容 -->
+      <div class="question-card">
+        <div class="question-number">第1题</div>
+        <p class="question-text">当你需要做决定时，你更倾向于？</p>
+        <div class="options-container">
+          <button class="option-button" data-option="A">
+            仔细分析所有可能的选项，然后做出最理性的决定
+          </button>
+          <button class="option-button" data-option="B">
+            凭直觉和感觉快速做出决定
+          </button>
+          <button class="option-button" data-option="C">
+            考虑他人感受和需求
+          </button>
+          <button class="option-button" data-option="D">
+            按照计划和步骤有条理地执行
+          </button>
+        </div>
+        <button class="next-button" id="nextBtn" disabled>下一题</button>
+      </div>
+    </div>
+
+    <script>
+      // 获取DOM元素
+      const homepage = document.getElementById("homepage");
+      const testpage = document.getElementById("testpage");
+      const startBtn = document.getElementById("startBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const optionButtons = document.querySelectorAll(".option-button");
+
+      // 页面切换功能
+      function switchPage(fromPage, toPage) {
+        fromPage.classList.remove("active");
+        fromPage.classList.add("hidden");
+
+        setTimeout(() => {
+          toPage.classList.remove("hidden");
+          toPage.classList.add("active");
+        }, 100);
+      }
+
+      // 开始测试按钮
+      startBtn.addEventListener("click", () => {
+        switchPage(homepage, testpage);
+      });
+
+      // 选项按钮点击
+      let selectedOption = null;
+
+      optionButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          // 移除其他选项的选中状态
+          optionButtons.forEach((btn) => btn.classList.remove("selected"));
+
+          // 设置当前选项为选中
+          button.classList.add("selected");
+          selectedOption = button.dataset.option;
+
+          // 启用下一题按钮
+          nextBtn.disabled = false;
+        });
+      });
+
+      // 下一题按钮
+      nextBtn.addEventListener("click", () => {
+        if (!selectedOption) return;
+
+        // 重置选择状态
+        optionButtons.forEach((btn) => btn.classList.remove("selected"));
+        selectedOption = null;
+        nextBtn.disabled = true;
+
+        // 这里可以添加实际的题目跳转逻辑
+        // 例如：loadNextQuestion();
+      });
+    </script>
+  </body>
+</html>
